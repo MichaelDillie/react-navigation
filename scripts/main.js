@@ -4,6 +4,8 @@ var Backbone = require('backbone');
 window.$ = require('jquery');
 window.jQuery = $;
 
+Parse.initialize('IiQzs9Nbc1ejEKzCCPOr5g4eQoCAvXxlOIJdwka3', 'dk6FNZcGQh1NQ5JEfJMU6Pyhmwx2ly6y4HjrBP1U');
+
 var NavigationComponent = require('./components/NavigationComponent');
 var HomeComponent = require('./components/HomeComponent');
 var DashboardComponent = require('./components/DashboardComponent');

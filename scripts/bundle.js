@@ -3480,9 +3480,7 @@ function drainQueue() {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
+            currentQueue[queueIndex].run();
         }
         queueIndex = -1;
         len = queue.length;
@@ -3534,6 +3532,7 @@ process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
+// TODO(shtylman)
 process.cwd = function () { return '/' };
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
@@ -32690,72 +32689,87 @@ module.exports = React.createClass({
 		});
 	},
 	render: function render() {
-		var currentPage = Backbone.history.getFragment();
+		var leftLinks = [];
+		var rightLinks = [];
 
-		var links = [React.createElement(
-			'li',
-			{ key: 'home', className: currentPage === '' ? 'active' : '' },
-			React.createElement(
-				'a',
-				{ href: '#' },
-				'Home'
-			)
-		)];
+		leftLinks.push(this.createNavLink('', 'Home'));
 
-		if (Parse.User.current()) {
-			links.push(React.createElement(
-				'li',
-				{ key: 'dashboard', className: currentPage === 'dashboard' ? 'active' : '' },
-				React.createElement(
-					'a',
-					{ href: '#dashboard' },
-					'Dashboard'
-				)
-			));
-			links.push(React.createElement(
-				'li',
-				{ key: 'logout' },
-				React.createElement(
-					'a',
-					{ href: '#logout' },
-					'Logout'
-				)
-			));
+		if (!Parse.User.current()) {
+			rightLinks.push(this.createNavLink('login', 'Login'));
+			rightLinks.push(this.createNavLink('register', 'Register'));
 		} else {
-			links.push(React.createElement(
+			leftLinks.push(this.createNavLink('dashboard', 'Dashboard'));
+			rightLinks.push(React.createElement(
 				'li',
-				{ key: 'login', className: currentPage === 'login' ? 'active' : '' },
+				null,
 				React.createElement(
 					'a',
-					{ href: '#login' },
-					'Login'
-				)
-			));
-			links.push(React.createElement(
-				'li',
-				{ key: 'register', className: currentPage === 'register' ? 'active' : '' },
-				React.createElement(
-					'a',
-					{ href: '#register' },
-					'Register'
+					{ href: '#', onClick: this.logout },
+					'Logout'
 				)
 			));
 		}
 
 		return React.createElement(
 			'div',
-			{ className: 'nav-wrapper' },
+			{ className: 'container-fluid' },
 			React.createElement(
-				'a',
-				{ href: '#', className: 'brand-logo left' },
-				'Login Example'
+				'div',
+				{ className: 'navbar-header' },
+				React.createElement(
+					'span',
+					{ className: 'sr-only' },
+					'Toggle navigation'
+				),
+				React.createElement('span', { className: 'icon-bar' }),
+				React.createElement('span', { className: 'icon-bar' }),
+				React.createElement('span', { className: 'icon-bar' }),
+				React.createElement(
+					'a',
+					{ className: 'navbar-brand', href: '#' },
+					'Brand'
+				)
 			),
 			React.createElement(
 				'ul',
-				{ id: 'nav-mobile', className: 'right' },
-				links
+				{ className: 'nav navbar-nav navbar-left' },
+				leftLinks
+			),
+			React.createElement(
+				'ul',
+				{ className: 'nav navbar-nav navbar-right' },
+				rightLinks
 			)
 		);
+	},
+	logout: function logout(e) {
+		e.preventDefault();
+		Parse.User.logOut();
+		this.props.router.navigate('', { trigger: true });
+	},
+	createNavLink: function createNavLink(url, label) {
+		var currentUrl = Backbone.history.getFragment();
+		if (currentUrl === url) {
+			return React.createElement(
+				'li',
+				{ className: 'active' },
+				React.createElement(
+					'a',
+					{ href: '#' + url },
+					label
+				)
+			);
+		} else {
+			return React.createElement(
+				'li',
+				null,
+				React.createElement(
+					'a',
+					{ href: '#' + url },
+					label
+				)
+			);
+		}
 	}
 });
 
@@ -32864,7 +32878,7 @@ var Backbone = require('backbone');
 window.$ = require('jquery');
 window.jQuery = $;
 
-Parse.initialize('bWo3oxF8mUmVjOzLWZaeVYGOYRlJAUJVu9RRVVEB', 'agubNevaI7RuF4hlu4DVHQWlCc4i3EbTBLSftsLp');
+Parse.initialize('IiQzs9Nbc1ejEKzCCPOr5g4eQoCAvXxlOIJdwka3', 'dk6FNZcGQh1NQ5JEfJMU6Pyhmwx2ly6y4HjrBP1U');
 
 var NavigationComponent = require('./components/NavigationComponent');
 var HomeComponent = require('./components/HomeComponent');
